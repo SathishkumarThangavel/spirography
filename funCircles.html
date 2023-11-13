@@ -1,0 +1,119 @@
+<html>
+    <head>
+        <style>
+            #canvas {
+                width: 100%;
+                height: 70%;
+            }
+        </style>
+    </head>
+    <body>
+
+        <canvas id="canvas"></canvas>
+        
+            <!-- controllers -->
+
+            <div>
+                <div>
+                    <label for="radius1">Radius of 1st circle</label>
+                    <input oninput="handleOnChange()" type="range" id="radius1" name="radius1" min="-150" max="150">
+                </div>
+                
+                <div>
+                    <label for="radius2">Radius of 2nd circle</label>
+                    <input oninput="handleOnChange()" type="range" id="radius2" name="radius2" min="-150" max="150">
+                </div>
+                
+                <div>
+                    <label for="ratio">Ratio between circles</label>
+                    <input oninput="handleOnChange()" type="range" id="ratio" name="ratio" min="-150" max="150">
+                </div>
+                
+                <div>
+                    <label for="nPI">Maths PI count</label>
+                    <input oninput="handleOnChange()" type="range" id="nPI" name="nPI" min="1" max="150">
+                </div>
+
+                <!-- Color handler -->
+                <br/>
+                <div>
+                    <label for="red">RED</label>
+                    <input oninput="handleOnChange()" type="range" id="red" name="red" min="0" max="256">
+                </div>
+
+                <div>
+                    <label for="green">GREEN</label>
+                    <input oninput="handleOnChange()" type="range" id="green" name="green" min="0" max="256">
+                </div>
+
+                <div>
+                    <label for="blue">BLUE</label>
+                    <input oninput="handleOnChange()" type="range" id="blue" name="blue" min="0" max="256">
+                </div>
+            </div>
+
+        <script>
+            function drawSpirograph(context, cx, cy, radius1, radius2, ratio, nPI = 2, color= {red:256, green:256, blue: 256}) {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.fillStyle = '#1c1c5c';
+                context.fillRect(0,0, canvas.width, canvas.height);
+                context.strokeStyle = `rgb(${color.red}, ${color.green}, ${color.blue})`;
+
+                // Move to starting point (theta = 0)
+                context.beginPath();
+                context.moveTo(cx + radius1 + radius2, cy);
+
+                // Draw segments from theta = 0 to theta = 2PI
+                for (let theta = 0; theta <= Math.PI * nPI; theta += 0.01) {
+                    let x = cx + radius1 * Math.cos(theta) + radius2 * Math.cos(theta * ratio);
+                    let y = cy + radius1 * Math.sin(theta) + radius2 * Math.sin(theta * ratio);
+                    context.lineTo(x, y);
+                }
+
+                // Apply stroke
+                context.stroke();
+            }
+
+            // Get drawing context
+            var canvas = document.getElementById('canvas');
+            var context = canvas.getContext('2d');
+            let dpr = window.devicePixelRatio;
+
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            context.lineWidth = 2;
+
+            // Set default value for controllers
+            document.getElementById('radius1').value = -93;
+            document.getElementById('radius2').value = -72;
+            document.getElementById('ratio').value = -43;
+            document.getElementById('nPI').value = 10;
+
+            document.getElementById('red').value = 256;
+            document.getElementById('green').value = 256;
+            document.getElementById('blue').value = 256;
+
+            // Draw spirograph
+            drawSpirograph(context, canvas.width / 2, canvas.height / 2, -93, -72, -43, 10);
+            
+            
+            // handler function
+            function handleOnChange() {
+                let radius1 = parseInt(document.getElementById('radius1').value);
+                let radius2 = parseInt(document.getElementById('radius2').value);
+                let ratio = parseInt(document.getElementById('ratio').value);
+                let nPI = parseInt(document.getElementById('nPI').value);
+
+                let red = parseInt(document.getElementById('red').value);
+                let green = parseInt(document.getElementById('green').value);
+                let blue = parseInt(document.getElementById('blue').value);
+
+                let color = {red, green, blue};
+
+                drawSpirograph(context, canvas.width/2, canvas.height/2, radius1, radius2, ratio, nPI, color);
+            }
+
+        </script>
+    </body>
+</html>
